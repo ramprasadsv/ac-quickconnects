@@ -20,7 +20,11 @@ pipeline {
         stage('git repo & clean') {
             steps {
                 script{
-                   sh(script: "rm -r ac-quickconnects", returnStdout: true)
+                   try{
+                      sh(script: "rm -r ac-quickconnects", returnStdout: true)    
+                   }catch (Exception e) {
+                       echo 'Exception occurred: ' + e.toString()
+                   }                   
                    sh(script: "git clone https://github.com/ramprasadsv/ac-quickconnects.git", returnStdout: true)
                    sh(script: "ls -ltr", returnStatus: true)
                    CONFIGDETAILS = sh(script: 'cat parameters.json', returnStdout: true).trim()
