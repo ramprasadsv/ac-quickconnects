@@ -103,12 +103,10 @@ def getUserId (primary, userId, target) {
     
 }
 
-
-def INSTANCEARN = "662de594-7bab-4713-952b-2b4cb16f2724"
-def FLOWID = "3b0db24a-c113-4847-8857-113c2c064131"
-//def MISSINGQC = [:]
+def CONFIGDETAILS = ""
 String MISSINGQC = ""
-String TRAGETINSTANCEARN = "de1c040b-d1fe-4b12-b1e8-5e072329b86a"
+String INSTANCEARN = ""
+String TRAGETINSTANCEARN = ""
 String PRIMARYQC = ""
 String TARGETQC = ""
 String PRIMARYQUEUES = ""
@@ -123,9 +121,13 @@ pipeline {
     stages {
         stage('git repo & clean') {
             steps {
-                   sh(script: "rm -r ac-contactflows", returnStdout: true)
-                   sh(script: "git clone https://github.com/ramprasadsv/ac-contactflows.git", returnStdout: true)
+                   //sh(script: "rm -r ac-quickconnects", returnStdout: true)
+                   sh(script: "git clone https://github.com/ramprasadsv/ac-quickconnects.git", returnStdout: true)
                    sh(script: "ls -ltr", returnStatus: true)
+                   CONFIGDETAILS = sh(script: 'cat parameters.json', returnStdout: true).trim()
+                   def config = jsonParse(CONFIGDETAILS)
+                   INSTANCEARN = config.primaryInstance
+                   TRAGETINSTANCEARN = config.targetInstance
                    
             }
         }
