@@ -1,108 +1,6 @@
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput; 
 
-@NonCPS
-def jsonParse(def json) {
-    new groovy.json.JsonSlurper().parseText(json)
-}
-
-def toJSON(def json) {
-    new groovy.json.JsonOutput().toJson(json)
-}
-
-def checkList(qcName, tl) {
-    boolean qcFound = false
-    for(int i = 0; i < tl.QuickConnectSummaryList.size(); i++){
-        def obj2 = tl.QuickConnectSummaryList[i]
-        String qcName2 = obj2.Name
-        if(qcName2.equals(qcName)) {
-            qcFound = true
-            break
-        }
-    }
-    return qcFound
-}
-
-def getFlowId (primary, flowId, target) {
-    def pl = jsonParse(primary)
-    def tl = jsonParse(target)
-    String fName = ""
-    String rId = ""
-    println "Searching for flowId : $flowId"
-    for(int i = 0; i < pl.ContactFlowSummaryList.size(); i++){
-        def obj = pl.ContactFlowSummaryList[i]    
-        if (obj.Id.equals(flowId)) {
-            fName = obj.Name
-            println "Found flow name : $fName"
-            break
-        }
-    }
-    println "Searching for flow name : $fName"        
-    for(int i = 0; i < tl.ContactFlowSummaryList.size(); i++){
-        def obj = tl.ContactFlowSummaryList[i]    
-        if (obj.Name.equals(fName)) {
-            rId = obj.Id
-            println "Found flow id : $rId"
-            break
-        }
-    }
-    return rId
-}
-
-def getQueueId (primary, queueId, target) {
-    def pl = jsonParse(primary)
-    def tl = jsonParse(target)
-    String fName = ""
-    String rId = ""
-    println "Searching for queueId : $queueId"
-    for(int i = 0; i < pl.QueueSummaryList.size(); i++){
-        def obj = pl.QueueSummaryList[i]    
-        if (obj.Id.equals(queueId)) {
-            fName = obj.Name
-            println "Found queue name : $fName"
-            break
-        }
-    }
-            
-    for(int i = 0; i < tl.QueueSummaryList.size(); i++){
-        def obj = tl.QueueSummaryList[i]    
-        if (obj.Name.equals(fName)) {
-            rId = obj.Id
-            println "Found flow id : $rId"
-            break
-        }
-    }
-    return rId
-    
-}
-
-def getUserId (primary, userId, target) {
-    def pl = jsonParse(primary)
-    def tl = jsonParse(target)
-    String fName = ""
-    String rId = ""
-    println "Searching for userId : $userId"
-    for(int i = 0; i < pl.UserSummaryList.size(); i++){
-        def obj = pl.UserSummaryList[i]    
-        if (obj.Id.equals(userId)) {
-            fName = obj.Username
-            println "Found user name : $fName"
-            break
-        }
-    }
-    println "Searching for userId for : $fName"        
-    for(int i = 0; i < tl.UserSummaryList.size(); i++){
-        def obj = tl.UserSummaryList[i]    
-        if (obj.Username.equals(fName)) {
-            rId = obj.Id
-            println "Found flow id : $rId"
-            break
-        }
-    }
-    return rId
-    
-}
-
 def CONFIGDETAILS 
 String MISSINGQC = ""
 def INSTANCEARN = ""
@@ -122,7 +20,7 @@ pipeline {
         stage('git repo & clean') {
             steps {
                 script{
-                   //sh(script: "rm -r ac-quickconnects", returnStdout: true)
+                   sh(script: "rm -r ac-quickconnects", returnStdout: true)
                    sh(script: "git clone https://github.com/ramprasadsv/ac-quickconnects.git", returnStdout: true)
                    sh(script: "ls -ltr", returnStatus: true)
                    CONFIGDETAILS = sh(script: 'cat parameters.json', returnStdout: true).trim()
@@ -249,3 +147,107 @@ pipeline {
         
      }
 }
+
+
+@NonCPS
+def jsonParse(def json) {
+    new groovy.json.JsonSlurper().parseText(json)
+}
+
+def toJSON(def json) {
+    new groovy.json.JsonOutput().toJson(json)
+}
+
+def checkList(qcName, tl) {
+    boolean qcFound = false
+    for(int i = 0; i < tl.QuickConnectSummaryList.size(); i++){
+        def obj2 = tl.QuickConnectSummaryList[i]
+        String qcName2 = obj2.Name
+        if(qcName2.equals(qcName)) {
+            qcFound = true
+            break
+        }
+    }
+    return qcFound
+}
+
+def getFlowId (primary, flowId, target) {
+    def pl = jsonParse(primary)
+    def tl = jsonParse(target)
+    String fName = ""
+    String rId = ""
+    println "Searching for flowId : $flowId"
+    for(int i = 0; i < pl.ContactFlowSummaryList.size(); i++){
+        def obj = pl.ContactFlowSummaryList[i]    
+        if (obj.Id.equals(flowId)) {
+            fName = obj.Name
+            println "Found flow name : $fName"
+            break
+        }
+    }
+    println "Searching for flow name : $fName"        
+    for(int i = 0; i < tl.ContactFlowSummaryList.size(); i++){
+        def obj = tl.ContactFlowSummaryList[i]    
+        if (obj.Name.equals(fName)) {
+            rId = obj.Id
+            println "Found flow id : $rId"
+            break
+        }
+    }
+    return rId
+}
+
+def getQueueId (primary, queueId, target) {
+    def pl = jsonParse(primary)
+    def tl = jsonParse(target)
+    String fName = ""
+    String rId = ""
+    println "Searching for queueId : $queueId"
+    for(int i = 0; i < pl.QueueSummaryList.size(); i++){
+        def obj = pl.QueueSummaryList[i]    
+        if (obj.Id.equals(queueId)) {
+            fName = obj.Name
+            println "Found queue name : $fName"
+            break
+        }
+    }
+            
+    for(int i = 0; i < tl.QueueSummaryList.size(); i++){
+        def obj = tl.QueueSummaryList[i]    
+        if (obj.Name.equals(fName)) {
+            rId = obj.Id
+            println "Found flow id : $rId"
+            break
+        }
+    }
+    return rId
+    
+}
+
+def getUserId (primary, userId, target) {
+    def pl = jsonParse(primary)
+    def tl = jsonParse(target)
+    String fName = ""
+    String rId = ""
+    println "Searching for userId : $userId"
+    for(int i = 0; i < pl.UserSummaryList.size(); i++){
+        def obj = pl.UserSummaryList[i]    
+        if (obj.Id.equals(userId)) {
+            fName = obj.Username
+            println "Found user name : $fName"
+            break
+        }
+    }
+    println "Searching for userId for : $fName"        
+    for(int i = 0; i < tl.UserSummaryList.size(); i++){
+        def obj = tl.UserSummaryList[i]    
+        if (obj.Username.equals(fName)) {
+            rId = obj.Id
+            println "Found flow id : $rId"
+            break
+        }
+    }
+    return rId
+    
+}
+
