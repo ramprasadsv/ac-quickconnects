@@ -103,10 +103,10 @@ def getUserId (primary, userId, target) {
     
 }
 
-def CONFIGDETAILS = ""
+def CONFIGDETAILS 
 String MISSINGQC = ""
-String INSTANCEARN = ""
-String TRAGETINSTANCEARN = ""
+def INSTANCEARN = ""
+def TRAGETINSTANCEARN = ""
 String PRIMARYQC = ""
 String TARGETQC = ""
 String PRIMARYQUEUES = ""
@@ -121,6 +121,7 @@ pipeline {
     stages {
         stage('git repo & clean') {
             steps {
+                script{
                    //sh(script: "rm -r ac-quickconnects", returnStdout: true)
                    sh(script: "git clone https://github.com/ramprasadsv/ac-quickconnects.git", returnStdout: true)
                    sh(script: "ls -ltr", returnStatus: true)
@@ -128,7 +129,7 @@ pipeline {
                    def config = jsonParse(CONFIGDETAILS)
                    INSTANCEARN = config.primaryInstance
                    TRAGETINSTANCEARN = config.targetInstance
-                   
+                }
             }
         }
         
